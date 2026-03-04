@@ -4,5 +4,13 @@
     "markdown.preview.markEditorSelection": false,
     "markdown.preview.scrollEditorWithPreview": false,
     "markdown.preview.scrollPreviewWithEditor": false,
-    "liveServer.settings.port": 5502
+    "liveServer.settings.port": 5504,
+    "workbench.colorTheme": "One Dark Pro Flat",
+    "workbench.preferredDarkColorTheme": "One Dark Pro Flat",
+    "editor.fontSize": 14,
+    "dataWrangler.startInEditModeForNotebookEntrypoints": true,
+    "marimo.marimoPath": "uv run marimo",
+    "marimo.debug": true,
+    "marimo.sandbox": true,
+    "marimo.autoStart": false
 }

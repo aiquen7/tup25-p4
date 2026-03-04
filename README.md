@@ -1,94 +1,107 @@
-# TP2: Agenda de contactos (Web)
+# TP6: 2do Parcial
+
+El trabajo práctico 2 será evaluado como el 2do parcial.
+El trabajo es individual y debe ser realizado en el repositorio personal de cada alumno.
+
+Debe ser entregado el día *Miércoles 12 de Noviembre a partir de las 21hs y hasta las 22hs*.
+
 
 ## Objetivo
 
-Desarrollar una "Agenda de contactos" como aplicación web usando JavaScript puro y Pico.css para la presentación.
+Desarrollo de un sitio de comercio electrónico simple utilizando usando React para el frontend y FastAPI para el backend.
 
-## Fecha de entrega
+## Funcionalidad
+- Registar usuario
+- Iniciar sesión
+- Cerrar sesión
+- Ver resumen de compras
+- Ver detalle de compras
+- Buscar productos (por contenido y categoría)
+- Agregar productos al carrito
+- Quitar productos del carrito
+- Cancelar compra
+- Finalizar compra
 
-> [!IMPORTANT]
-> El trabajo debe presentarse hasta el **Lunes 8 de septiembre a la 21hs**.
+## Tecnologías
+- Frontend: React (Usando next.js con Tailwind CSS & Shadcn UI)
+- Backend: FastAPI (API RESTful, SQLModel + SQLite)
 
-## Alcance y lineamientos
+## Estructura de la base de datos
+    - Usuario: id, nombre, email, contraseña (hashed)
+    - Producto: id, nombre, descripción, precio, categoría, existencia
+    - Carrito: id, usuario_id, estado, productos (lista de productos con cantidad)
+        - Item del carrito: producto_id, cantidad
+    - Compra: id, usuario_id, fecha, direccion, tarjeta, total, envio  
+        - Item de compra: producto_id, cantidad, nombre, precio_unitario
 
-- Implementación sin frameworks: solo **HTML**, **CSS (Pico.css)** y **JavaScript**.
-- La interfaz debe ser accesible.
-- Evitar dependencias externas (salvo Pico.css por CDN).
-- Mantener una estructura simple: un archivo HTML, un JS y un CSS.
+## Endpoints de la API
+- POST /registrar: Registrar un nuevo usuario
+- POST /iniciar-sesion: Iniciar sesión y obtener token de autenticación
+- POST /cerrar-sesion: Cerrar sesión (invalidar token)
+- GET /productos: Obtener lista de productos (con filtros opcionales por categoría y búsqueda)
+- GET /productos/{id}: Obtener detalles de un producto específico
+- POST /carrito: Agregar producto al carrito
+- DELETE /carrito/{product_id}: Quitar producto del carrito
+- GET /carrito: Ver contenido del carrito
+- POST /carrito/finalizar: Finalizar compra
+- POST /carrito/cancelar: Cancelar compra (vaciar carrito)
+- GET /compras: Ver resumen de compras del usuario
+- GET /compras/{id}: Ver detalle de una compra específica
 
-## Estructura de datos y modelo
+## Pantallas principales
+- Pantalla de registro e inicio de sesión
+- Pantalla de listado de productos con búsqueda y filtros / Carrito de compras
+- Pantalla de finalización de compra (carrito + con dirección y detalles de pago)
+- Pantalla de compras anteriores (resumen + detalle)
 
-- Implementar dos clases: **Contacto** y **Agenda**.
-- Un **Contacto** contiene: `id`, `nombre`, `apellido`, `telefono`, `email`.
-- La **Agenda** es una colección de `Contacto` y administra las operaciones.
+## Flujo de trabajo
+1. El usuario se registra e inicia sesión.
+2. El usuario navega por los productos, utilizando búsqueda y filtro de categoría.
+3. El usuario agrega productos al carrito.
+4. El usuario revisa el carrito y puede eliminar productos si lo desea.
+5. El usuario finaliza la compra proporcionando dirección y detalles de pago.
+6. El usuario puede ver un resumen de sus compras anteriores.
 
-## Requisitos funcionales
+## Reglas de uso
+- Solo se puede agregar productos al carrito si hay existencia disponible.
+- El usuario debe estar autenticado para realizar compras y ver su historial.
+- El precio total se calcula sumando el precio unitario por la cantidad de cada producto en el carrito.
+- El iva es el 21% del total de la compra (excepto los productos electrónicos que son 10%).
+- El envío es gratuito para compras superiores a $1000, de lo contrario tiene un costo fijo de $50.
+- Los productos solo pueder ser eliminados del carrito si el carrito no ha sido finalizado.
+- Una vez finalizada la compra, el carrito se vacía y se crea un registro de compra.
+- Los productos sin existencias deben mostrarse como "Agotados" y no se pueden agregar al carrito.
 
-1. Cabecera con:
-   - Campo de **búsqueda** (filtra por nombre, apellido, teléfono o email).
-   - Botón **Agregar** para abrir un diálogo de alta.
-2. Cuerpo con listado de **tarjetas** (cards) de contactos:
-   - Muestra todos los contactos o solo los que coinciden con el texto buscado.
-   - En cada tarjeta, el **nombre y apellido** deben destacarse.
-   - Cada tarjeta debe incluir **dos iconos**: **Editar** y **Borrar**.
-3. Agregar contacto:
-   - Al presionar "Agregar", se abre un **diálogo** con un formulario para cargar datos.
-4. Editar contacto:
-   - Al presionar el icono de **Editar**, se abre el mismo diálogo con los datos precargados.
-5. Borrar contacto:
-   - Al presionar el icono de **Borrar**, se elimina **directamente** el contacto (sin confirmación).
-6. Datos iniciales:
-   - Al cargar por primera vez, la aplicación debe mostrar **10 contactos de ejemplo**.
-
-## Requisitos técnicos
-
-- JS en **módulo único** o IIFE, sin dependencias.
-- Uso de **Pico.css** por CDN para estilos base.
-- El render del listado debe ser **dinámico** a partir de los datos actuales.
-- La búsqueda debe ser **insensible a mayúsculas y acentos** (normalización de texto).
-- Ordenamiento por **apellido** y luego **nombre**.
-- Sin persistencia: los datos viven solo en memoria.
-- El modelo y la lógica de negocio deben implementarse usando **clases** (`Agenda` y `Contacto`), con métodos para `agregar`, `actualizar` y `borrar`.
-
-## Criterios de aceptación
-
-- La UI incluye: buscador, botón Agregar, listado de tarjetas y diálogo de alta/edición.
-- Las tarjetas muestran nombre/apellido destacado y los datos de contacto (teléfono y email).
-- Los iconos de Editar/Borrar funcionan y el borrado no pide confirmación.
-- La búsqueda filtra en tiempo real, sin recargar la página.
-- No hay persistencia: al recargar la página, vuelven a aparecer los 10 contactos de ejemplo.
-- El código está organizado, legible y con nombres descriptivos.
-
-## Pistas y consideraciones
-
-- Usar un **array** en memoria para trabajar y sincronizarlo con `localStorage`.
-- Normalizar texto para el filtro con `String.prototype.normalize('NFD')` y remover diacríticos.
-- Para el diálogo, puede usarse `<dialog>` nativo de HTML.
-- Para ordenar, usar `localeCompare` sobre los campos normalizados.
-
-## Entregables
-
-- `./tp2/ejercicio.html`: página principal de la aplicación.
-- `./tp2/ejercicio.js`: lógica de la aplicación.
-- `./tp2/ejercicio.css`: estilos propios adicionales.
-
-## Cómo ejecutar
-
-- Abrir el archivo `./tp2/ejercicio.html` en un navegador moderno.
-- Opcionalmente, levantar un servidor HTTP local simple.
+## Consideraciones adicionales
+- Realizar pruebas unitarias para los endpoints de la API.
+- Implementar manejo de errores adecuado (e.g., usuario no encontrado, producto agotado).
+- Cargar datos iniciales de productos en la base de datos para pruebas.
+- Los datos de los productos se encuentran en el archivo `productos.json`, las imágenes en la carpeta `/imagenes`.
 
 
-## Como se verá la aplicación
-#### Lista de contactos
-![Lista de contactos](./enunciados/tp2/agenda1.png)
-#### Diálogo de contacto (alta/edición)
-![Diálogo de contacto](./enunciados/tp2/agenda2.png)
+## Instrucciones para la entrega.
+> [!NOTA] El trabajo debe ser entregado el día *Miércoles 12 de Noviembre a partir de las 21hs y hasta las 22hs*.
+Durante el desarrollo se deben hacer commits frecuentes y descriptivos. (mínimo 10 commits)
 
-## Cómo presentar el trabajo
-1. Volver a `main` y actualizar el repo local (fetch/pull).
-2. Actualizar el repositorio  (fetch/pull).
-3. Crear una rama (TP2-{Legajo}).
-4. Implementar la solución en la carpeta correspondiente (`enunciados/tp2/`).
-5. Confirmar los cambios realizados (commit).
-6. Publicar los cambios en GitHub (push).
-7. Realizar el pull request hacia `main` con el título: `TP2 - {Legajo} - {Nombre Apellido}`.
+## Pantallas.
+
+### Video de demostracion
+![demo](./tp6.mp4)
+### 1. Pantalla inicial de productos.
+![Pantalla inicial de productos](./01-pantalla-inicial.png)
+
+### 2. Pantalla de inicio de sesión.
+![Pantalla de inicio de sesión](./02-iniciar-sesion.png)
+
+### 3. Pantalla de registrar usuario.
+![Pantalla de registrar usuario](./03-registrar-usuario.png)
+
+### 4. Pantalla de compra (con carrito).
+![Pantalla de compra](./04-comprando.png)
+
+### 5. Pantalla de confirmar compra.
+![Pantalla de confirmar compra](./05-finalizando-compra.png)
+
+### 6. Pantalla de historial de compras.
+![Pantalla de historial de compras](./06-historial-compra.png)
+
